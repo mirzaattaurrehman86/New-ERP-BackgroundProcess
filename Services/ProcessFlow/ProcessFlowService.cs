@@ -620,9 +620,9 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
                 Console.WriteLine($"[HEARTBEAT] {DateTime.Now:yyyy-MM-dd HH:mm:ss} - {activity}");
             }
         }
-        public void StartWatchdog()
+        public async Task StartWatchdog()
         {
-            _watchdogTimer = new Timer(_ =>
+            _watchdogTimer = new Timer(async _ =>
             {
                 Console.WriteLine(
                     $"Watchdog Check: Idle={(DateTime.UtcNow - _lastActivity).TotalSeconds}s");
@@ -638,6 +638,8 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
                     processLock?.releaseAppLock();
 
                     Process.GetCurrentProcess().Kill();
+
+                    await LogError(AttendanceDeviceOffice.All, string.Empty, string.Empty, DateTime.Now, "WATCHDOG FIRING.");
                 }
 
             }, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
