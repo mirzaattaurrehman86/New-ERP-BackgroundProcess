@@ -10,7 +10,6 @@ using ZKTecoAttendanceService.Services.AttendanceDeviceService;
 using ZKTecoAttendanceService.Services.ProcessFlow;
 using ZKTecoAttendanceService.Services.ProcessLock;
 
-//class Program
 class ConsoleProgram
 {
     private static readonly ProcessFlowService processFlowService = new ProcessFlowService();

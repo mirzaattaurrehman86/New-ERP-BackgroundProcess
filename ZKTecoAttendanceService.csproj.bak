@@ -10,6 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ZKTecoApi\**" />
+    <EmbeddedResource Remove="ZKTecoApi\**" />
+    <None Remove="ZKTecoApi\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <COMReference Include="zkemkeeper">
       <WrapperTool>tlbimp</WrapperTool>
       <VersionMinor>0</VersionMinor>
@@ -27,5 +33,6 @@
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.0-preview2.26190.5" />
     <PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
   </ItemGroup>
+
 
 </Project>
