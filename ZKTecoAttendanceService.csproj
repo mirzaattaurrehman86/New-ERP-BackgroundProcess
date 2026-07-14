@@ -13,6 +13,11 @@
     <Compile Remove="ZKTecoApi\**" />
     <EmbeddedResource Remove="ZKTecoApi\**" />
     <None Remove="ZKTecoApi\**" />
+	
+	
+	<Compile Remove="ZKTecoPostgreSQL\**" />
+    <EmbeddedResource Remove="ZKTecoPostgreSQL\**" />
+    <None Remove="ZKTecoPostgreSQL\**" />
   </ItemGroup>
 
   <ItemGroup>
