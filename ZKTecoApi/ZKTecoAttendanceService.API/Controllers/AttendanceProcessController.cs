@@ -60,45 +60,36 @@ namespace ZKTecoAttendanceService.API.Controllers
 
             ProcessFlowService processFlowService = new ProcessFlowService();
 
-            var db = new DatabaseContext();
+            //var db = new DatabaseContext();
 
-            processLock = new AttendanceProcessLock(db.connectionString);
+            //checkAcquire = false;
 
-            if (!processLock.Acquire())
-            {
-                string message = "Attendance synchronization already running.";
-
-                Console.WriteLine(message);
-
-                await processFlowService.LogError(dto.office ?? AttendanceDeviceOffice.All, "", "", DateTime.Now, message);
-
-                throw new BadRequestException("Attendance synchronization already running.");
-            }
-
-            checkAcquire = false;
             _cts = new CancellationTokenSource();
 
+            //if (await processFlowService.appLocked(dto, _cts.Token))
+            //    throw new BadRequestException("Attendance synchronization already running.");
+
             _ = Task.Run(async () =>
-            {
-                try
                 {
-                    await processFlowService.LogInfo(AttendanceDeviceOffice.All, "", "", DateTime.Now, "************ ..::.. Request Received ..::.. ************");
+                    try
+                    {
+                        await processFlowService.LogInfo(AttendanceDeviceOffice.All, "", "", DateTime.Now, "************ ..::.. Request Received ..::.. ************");
 
-                    string requestDetails = $"Request Details => Office:{dto.office}, MachineIp:{dto.machineIp}, EmployeeEnrollNumber:{dto.employeeEnrollNumber}, IsProcessAttendance:{dto.isProcessAttendance}, IsRestartMachine:{dto.isRestartMachine}, IsClearDeviceLogs:{dto.isClearDeviceLogs}, IsRemoveEmployeeRegistration:{dto.isRemoveEmployeeRegistration}";
+                        string requestDetails = $"Request Details => Office:{dto.office}, MachineIp:{dto.machineIp}, EmployeeEnrollNumber:{dto.employeeEnrollNumber}, IsProcessAttendance:{dto.isProcessAttendance}, IsRestartMachine:{dto.isRestartMachine}, IsClearDeviceLogs:{dto.isClearDeviceLogs}, IsRemoveEmployeeRegistration:{dto.isRemoveEmployeeRegistration}";
 
-                    await processFlowService.LogInfo(AttendanceDeviceOffice.All, "", "", DateTime.Now, requestDetails);
+                        await processFlowService.LogInfo(AttendanceDeviceOffice.All, "", "", DateTime.Now, requestDetails);
 
-                    await processFlowService.ExecuteRequestAsync(dto, _cts.Token, checkAcquire);
-                }
-                catch (Exception ex)
-                {
-                    string message = $"Fatal Exception => {ex}";
+                        await processFlowService.ExecuteRequestAsync(dto, _cts.Token, checkAcquire);
+                    }
+                    catch (Exception ex)
+                    {
+                        string message = $"Fatal Exception => {ex}";
 
-                    Console.WriteLine(message);
+                        Console.WriteLine(message);
 
-                    await processFlowService.LogException(AttendanceDeviceOffice.All, "", "", DateTime.Now, message);
-                }
-            });
+                        await processFlowService.LogException(AttendanceDeviceOffice.All, "", "", DateTime.Now, message);
+                    }
+                });
 
             return Ok(ApiResponse<string>.SuccessResponse("Started", "Attendance process started successfully."));
         }
@@ -123,10 +114,23 @@ namespace ZKTecoAttendanceService.API.Controllers
                 }
             }
 
-            if (_cts == null && killed <= 0)
-                throw new BadRequestException("No attendance process is running.");
+            //if (_cts == null && killed <= 0)
+            //    throw new BadRequestException("No attendance process is running.");
 
-            _cts?.Cancel();
+
+            if (_cts == null)
+            {
+                return BadRequest("No attendance process is running.");
+            }
+
+            if (_cts.IsCancellationRequested)
+            {
+                return BadRequest("Cancellation has already been requested.");
+            }
+
+            _cts.Cancel();
+
+            //_cts?.Cancel();
 
             return Ok(ApiResponse<string>.SuccessResponse("stopped", "Attendance service stopped."));
         }
