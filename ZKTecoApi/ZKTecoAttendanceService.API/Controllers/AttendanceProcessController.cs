@@ -120,12 +120,19 @@ namespace ZKTecoAttendanceService.API.Controllers
 
             if (_cts == null)
             {
+                if (killed > 0)
+                    return Ok(ApiResponse<string>.SuccessResponse("stopped", "Attendance service stopped."));
+
                 return BadRequest("No attendance process is running.");
             }
 
             if (_cts.IsCancellationRequested)
             {
-                return BadRequest("Cancellation has already been requested.");
+                if (killed > 0)
+                    return Ok(ApiResponse<string>.SuccessResponse("stopped", "Attendance service stopped."));
+
+                //return BadRequest("Cancellation has already been requested.");
+                return BadRequest("No attendance synchronization process is currently running.");
             }
 
             _cts.Cancel();
