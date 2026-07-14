@@ -21,7 +21,6 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
         private static DateTime _lastActivity = DateTime.UtcNow;
         private static Timer? _watchdogTimer;
         private static AttendanceProcessLock? processLock;
-
         public async Task<AttendanceServiceRequestDto> BuildRequestAsync(string[] args)
         {
             if (args.Length == 0)
@@ -56,10 +55,8 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
 
             return dto;
         }
-        public async Task ExecuteRequestAsync(AttendanceServiceRequestDto dto, CancellationToken token, bool checkAcquire = true)
+        public async Task<bool> appLocked(AttendanceServiceRequestDto dto, CancellationToken token, bool checkAcquire = true)
         {
-            await LogInfo(AttendanceDeviceOffice.All, "", "", DateTime.Now, "************ ..::.. Process Started ..::.. ************");
-
             var db = new DatabaseContext();
 
             processLock = new AttendanceProcessLock(db.connectionString);
@@ -74,6 +71,24 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
 
                     await LogError(dto.office ?? AttendanceDeviceOffice.All, "", "", DateTime.Now, message);
 
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        public async Task ExecuteRequestAsync(AttendanceServiceRequestDto dto, CancellationToken token, bool checkAcquire = true)
+        {
+            await LogInfo(AttendanceDeviceOffice.All, "", "", DateTime.Now, "************ ..::.. Process Started ..::.. ************");
+
+            var db = new DatabaseContext();
+
+            processLock = new AttendanceProcessLock(db.connectionString);
+
+            if (checkAcquire)
+            {
+                if (await appLocked(dto, token))
+                {
                     return;
                 }
             }
@@ -89,6 +104,11 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
 
                     await RunAttendanceProcess(token, dto.office);
 
+                    string message = $"Finished attendance process.";
+                    await LogInfo(dto.office ?? AttendanceDeviceOffice.All, dto.machineIp ?? "", "", DateTime.Now, message);
+
+                    Console.WriteLine(message);
+
                     return;
                 }
 
@@ -97,6 +117,10 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
                     await LogInfo(dto.office ?? AttendanceDeviceOffice.All, dto.machineIp ?? "", "", DateTime.Now, "Running restart machine operation.");
 
                     await RestartDeviceAsync(dto.office, dto.machineIp, token);
+
+                    string message = $"Finished restart machine operation.";
+                    await LogInfo(dto.office ?? AttendanceDeviceOffice.All, dto.machineIp ?? "", "", DateTime.Now, message);
+                    Console.WriteLine(message);
 
                     return;
                 }
@@ -109,6 +133,10 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
                     return;
                     await ClearDeviceLogsAsync(dto.office, dto.machineIp, token);
 
+                    string message = $"Finished clear device logs operation.";
+                    await LogInfo(dto.office ?? AttendanceDeviceOffice.All, dto.machineIp ?? "", "", DateTime.Now, message);
+                    Console.WriteLine(message);
+
                     return;
                 }
 
@@ -120,6 +148,10 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
                     return;
 
                     await RemoveEmployeeRegistrationFromAllDevicesAsync(dto.employeeEnrollNumber!, true, token);
+
+                    string message = $"Finished employee registration removal operation.";
+                    await LogInfo(dto.office ?? AttendanceDeviceOffice.All, dto.machineIp ?? "", "", DateTime.Now, message);
+                    Console.WriteLine(message);
 
                     return;
                 }
@@ -139,6 +171,8 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
                 StopWatchdog();
 
                 processLock.Release();
+
+                processLock.releaseAppLock();
             }
         }
         public async Task RunAttendanceProcess(CancellationToken token, AttendanceDeviceOffice? selectedOffice = null)
@@ -151,51 +185,52 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
             CZKEM zk = new CZKEM();
             try
             {
-                token.ThrowIfCancellationRequested();
-
                 List<AttendanceDeviceDto> devices = (await db.GetAttendanceDevicesAsync())/*.Where(x => x.office == AttendanceDeviceOffice.HeadOffice)*/.ToList();
                 token.ThrowIfCancellationRequested();
-                //var devices = DeviceDataService.GetAllDevices().Where(x => x.office == AttendanceDeviceOffice.HeadOffice);
 
                 if (selectedOffice != null && selectedOffice != AttendanceDeviceOffice.All)
                 {
                     token.ThrowIfCancellationRequested();
                     devices = devices.Where(x => x.office == selectedOffice.Value).ToList();
-                    token.ThrowIfCancellationRequested();
+
+
                     await LogInfo(selectedOffice.Value, "", "", DateTime.Now, $"Running for office: {selectedOffice.Value}");
                     token.ThrowIfCancellationRequested();
                 }
 
                 if (devices.Count() > 0)
                 {
-                    token.ThrowIfCancellationRequested();
                     foreach (var device in devices)
                     {
-                        token.ThrowIfCancellationRequested();
                         await Touch($"Starting device {device.ip}");
                         token.ThrowIfCancellationRequested();
+
                         zk = new CZKEM();
                         token.ThrowIfCancellationRequested();
+
                         deviceOffice = device.office;
-                        token.ThrowIfCancellationRequested();
                         ip = device.ip;
                         port = device.port;
                         token.ThrowIfCancellationRequested();
+
                         await LogInfo(deviceOffice, ip, port.ToString(), DateTime.Now, $" ..::.. ...Starting connection... ..::.. ");
                         token.ThrowIfCancellationRequested();
+
                         if (!(await ConnectDevice(zk, ip, port, deviceOffice)))
                         {
-                            token.ThrowIfCancellationRequested();
                             zk.Disconnect();
+
+                            token.ThrowIfCancellationRequested();
                             continue;
                         }
-                        token.ThrowIfCancellationRequested();
+
                         await Touch($"Connected {device.ip}");
                         token.ThrowIfCancellationRequested();
+
                         var attendance = await FetchAttendance(zk, ip, port, deviceOffice);
-                        token.ThrowIfCancellationRequested();
                         await Touch($"Attendance loaded {attendance.Count}");
                         token.ThrowIfCancellationRequested();
+
                         if (attendance.Any())
                         {
                             token.ThrowIfCancellationRequested();
@@ -203,9 +238,7 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
                             //PrintAttendanceInExcel(attendance, deviceOffice);
 
                             db.SaveAttendanceRecord(attendance, deviceOffice);
-                            token.ThrowIfCancellationRequested();
                             await Touch($"Attendance saved {attendance.Count}");
-                            token.ThrowIfCancellationRequested();
                             await Log(deviceOffice, ip, port.ToString(), DateTime.Now, $"Total attendance saved: {attendance.Count}");
                             token.ThrowIfCancellationRequested();
                         }
@@ -214,11 +247,10 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
                             token.ThrowIfCancellationRequested();
                             await LogError(deviceOffice, ip, port.ToString(), DateTime.Now, $"No attendance found.");
                         }
-                        token.ThrowIfCancellationRequested();
                         zk.Disconnect();
+
                         token.ThrowIfCancellationRequested();
                         await Touch($"Disconnected {device.ip}");
-                        token.ThrowIfCancellationRequested();
                         await Log(deviceOffice, ip, port.ToString(), DateTime.Now, $"Disconnected successfully.");
                     }
 
@@ -232,7 +264,7 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
             catch (Exception ex)
             {
                 StopWatchdog();
-                processLock?.Release();
+                //processLock?.Release();
                 zk.Disconnect();
                 await LogException(deviceOffice, ip, port.ToString(), DateTime.Now, $"Exception: {ex}");
 
@@ -240,6 +272,10 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
                 //{
                 //    throw new Exception(ex.Message);
                 //}
+            }
+            finally
+            {
+                //processLock?.Release();
             }
         }
         public async Task<bool> ConnectDevice(CZKEM zk, string ip, int port, AttendanceDeviceOffice deviceOffice)
@@ -599,6 +635,8 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
 
                     processLock?.Release();
 
+                    processLock?.releaseAppLock();
+
                     Process.GetCurrentProcess().Kill();
                 }
 
@@ -945,7 +983,7 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
                 token.ThrowIfCancellationRequested();
                 try
                 {
-                   
+
 
                     infoMessage = $"Trying to connect to device for remove employee registration from Device: {device.ip}:{device.port}.";
                     Console.WriteLine(infoMessage);

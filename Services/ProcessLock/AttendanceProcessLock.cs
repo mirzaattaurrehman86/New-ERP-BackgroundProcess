@@ -43,10 +43,40 @@ namespace ZKTecoAttendanceService.Services.ProcessLock
 
         public void Release()
         {
-            if (Connection != null)
+            //if (Connection != null)
+            //{
+            //    Connection.Close();
+            //    Connection.Dispose();
+            //}
+        }
+
+        public void releaseAppLock()
+        {
+            if (Connection == null)
+            {
+                //Connection = new SqlConnection(_connectionString);
+                //Connection.Open();
+                return;
+            }
+            try
+            {
+                using var cmd = new SqlCommand(
+                    @"EXEC sp_releaseapplock
+                @Resource = 'AttendanceSync',
+                @LockOwner = 'Session';",
+                    Connection);
+
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
             {
                 Connection.Close();
                 Connection.Dispose();
+                Connection = null;
             }
         }
 
@@ -58,7 +88,5 @@ namespace ZKTecoAttendanceService.Services.ProcessLock
 
             Console.WriteLine($"[Info] - Office:{deviceOffice} - MachineIP:{machineIP} - " + $"MachinePort:{machinePort} - DateTimeStamp:{dateTimeStamp} - Message:{message}\n");
         }
-
-
     }
 }

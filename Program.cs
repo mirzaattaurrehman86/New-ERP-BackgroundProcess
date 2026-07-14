@@ -31,6 +31,7 @@ class ConsoleProgram
             await processFlowService.LogInfo(AttendanceDeviceOffice.All, "", "", DateTime.Now, requestDetails);
 
             _cts = new CancellationTokenSource();
+
             await processFlowService.ExecuteRequestAsync(dto, _cts.Token, checkAcquire);
         }
         catch (Exception ex)
