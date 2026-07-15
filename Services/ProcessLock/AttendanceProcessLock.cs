@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using ZKattendanceTestProject.Infrastructure;
+using ZKTecoAttendanceService.Infrastructure;
 
 namespace ZKTecoAttendanceService.Services.ProcessLock
 {

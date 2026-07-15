@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using ZKattendanceTestProject.Dto;
 
-namespace ZKattendanceTestProject.Services.CopilotService
+
+namespace ZKTecoAttendanceService.Services.CopilotService
 {
     public class ZKSocketCopilotService
     {

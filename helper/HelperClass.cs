@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ZKattendanceTestProject.helper
+namespace ZKTecoAttendanceService.helper
 {
     public static class HelperClass
     {

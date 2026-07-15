@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
-using ZKattendanceTestProject.Dto;
-using ZKattendanceTestProject.helper;
-using ZKattendanceTestProject.Infrastructure;
+//using ZKattendanceTestProject.Dto;
+//using ZKattendanceTestProject.helper;
+//using ZKattendanceTestProject.Infrastructure;
 using zkemkeeper;
 using ZKTecoAttendanceService.Dto;
+using ZKTecoAttendanceService.helper;
+using ZKTecoAttendanceService.Infrastructure;
 using ZKTecoAttendanceService.Services.ProcessLock;
 
 namespace ZKTecoAttendanceService.Services.ProcessFlow
@@ -96,7 +98,7 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
             {
                 await Touch("Process Started");
 
-                StartWatchdog();
+                await StartWatchdog();
 
                 if (dto.isProcessAttendance)
                 {

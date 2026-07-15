@@ -1,14 +1,18 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
-using ZKattendanceTestProject.Dto;
 using ZKTecoAttendanceService.Dto;
 
-namespace ZKattendanceTestProject.Infrastructure
+namespace ZKTecoAttendanceService.Infrastructure
 {
     public class DatabaseContext
     {
-        public string connectionString = "Server=PROLPT\\MSSQLSERVER01;Database=BellMedExErpDb;User Id=sa;Password=phLpeh8f@0921;Encrypt=True;TrustServerCertificate=True;";
+        private readonly SqlDatabaseConfig _database = new();
+        public string connectionString; // = "Server=PROLPT\\MSSQLSERVER01;Database=BellMedExErpDb;User Id=sa;Password=phLpeh8f@0921;Encrypt=True;TrustServerCertificate=True;";
+        public DatabaseContext()
+        {
+            connectionString = _database.GetConnection().ConnectionString;
+        }
         public void SaveAttendanceRecord(List<EmployeeAttendanceDto> attendanceLogs, AttendanceDeviceOffice deviceOffice)
         {
             if (attendanceLogs == null || attendanceLogs.Count == 0)
@@ -90,7 +94,6 @@ namespace ZKattendanceTestProject.Infrastructure
                 throw new Exception("Error executing ProcessMonthlyAttendance stored procedure.", ex);
             }
         }
-
         public void SaveAttendanceBackgroundServiceLog(string logType, AttendanceDeviceOffice deviceOffice, string machineIP, string machinePort, DateTime dateTimeStamp, string message)
         {
             try
@@ -117,7 +120,6 @@ namespace ZKattendanceTestProject.Infrastructure
                 throw new Exception("Error saving attendance background service log.", ex);
             }
         }
-
         public async Task<List<AttendanceDeviceDto>> GetAttendanceDevicesAsync()
         {
             var devices = new List<AttendanceDeviceDto>();

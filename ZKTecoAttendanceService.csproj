@@ -36,8 +36,20 @@
     <PackageReference Include="ClosedXML" Version="0.105.0" />
 
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.0-preview2.26190.5" />
+
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.10" />
+
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.10" />
     <PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
   </ItemGroup>
+
+
+<ItemGroup>
+  <None Update="appsettings.json">
+    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+  </None>
+</ItemGroup>
+
 
 
 </Project>
