@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ZKTecoAttendanceService.Dto
+﻿namespace ZKTecoAttendanceService.Dto
 {
     public class DeviceHealthCheck
     {

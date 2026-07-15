@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Npgsql;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using ZKTecoAttendanceService.PostgreSQL.Configurations;
 
 namespace ZKTecoAttendanceService.PostgreSQL.Infrastructure

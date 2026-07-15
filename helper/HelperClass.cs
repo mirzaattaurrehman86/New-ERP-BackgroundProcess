@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ZKTecoAttendanceService.helper
+﻿namespace ZKTecoAttendanceService.helper
 {
     public static class HelperClass
     {

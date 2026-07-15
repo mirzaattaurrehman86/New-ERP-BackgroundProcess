@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ZKTecoAttendanceService.Dto;
+﻿using ZKTecoAttendanceService.Dto;
 using ZKTecoAttendanceService.Infrastructure;
 
 namespace ZKTecoAttendanceService.PostgreSQL.Services

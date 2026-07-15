@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ZKTecoAttendanceService.PostgreSQL.DTOs
+﻿namespace ZKTecoAttendanceService.PostgreSQL.DTOs
 {
     public class AttendanceRecordDto
     {
