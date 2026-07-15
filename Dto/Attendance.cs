@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ZKattendanceTestProject.Dto
+namespace ZKTecoAttendanceService.Dto
 {
     public class Attendance
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ZKattendanceTestProject
+namespace ZKTecoAttendanceService
 {
     public static class Validator
     {

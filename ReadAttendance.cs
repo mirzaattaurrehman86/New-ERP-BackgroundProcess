@@ -91,7 +91,8 @@
 ////}
 ///
 using System.Text.Json;
-using ZKattendanceTestProject.Dto;
+using ZKTecoAttendanceService.Dto;
+
 
 public class ReadAttendance
 {

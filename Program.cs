@@ -1,14 +1,6 @@
-﻿using ClosedXML.Excel;
-using System.Diagnostics;
-using System.Text.Json;
-using ZKattendanceTestProject.Dto;
-using ZKattendanceTestProject.helper;
-using ZKattendanceTestProject.Infrastructure;
-using zkemkeeper;
-using ZKTecoAttendanceService.Dto;
-using ZKTecoAttendanceService.Services.AttendanceDeviceService;
+﻿using ZKTecoAttendanceService.Dto;
 using ZKTecoAttendanceService.Services.ProcessFlow;
-using ZKTecoAttendanceService.Services.ProcessLock;
+
 
 class ConsoleProgram
 {
