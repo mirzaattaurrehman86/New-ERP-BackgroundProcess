@@ -1,7 +1,4 @@
-﻿using ZKTecoAttendanceService.Dto;
-using ZKTecoAttendanceService.Infrastructure;
-using ZKTecoAttendanceService.PostgreSQL.Services;
-
+﻿using ZKTecoAttendanceService.PostgreSQL.Services;
 class Postgreprogram
 {
     static async Task Main(string[] args)

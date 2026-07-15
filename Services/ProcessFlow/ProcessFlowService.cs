@@ -1,12 +1,6 @@
 ﻿using ClosedXML.Excel;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Text.Json;
-//using ZKattendanceTestProject.Dto;
-//using ZKattendanceTestProject.helper;
-//using ZKattendanceTestProject.Infrastructure;
 using zkemkeeper;
 using ZKTecoAttendanceService.Dto;
 using ZKTecoAttendanceService.helper;

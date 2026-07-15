@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.OpenApi;
 using ZKTecoAttendanceService.API.Middlewares;
 using ZKTecoAttendanceService.Dto;
 

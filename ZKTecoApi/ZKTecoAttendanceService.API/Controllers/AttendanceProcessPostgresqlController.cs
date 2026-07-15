@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ZKTecoAttendanceService.Dto;
 using ZKTecoAttendanceService.PostgreSQL.Services;
-using ZKTecoAttendanceService.Services.ProcessFlow;
-using ZKTecoAttendanceService.Services.ProcessLock;
 
 namespace ZKTecoAttendanceService.API.Controllers
 {
