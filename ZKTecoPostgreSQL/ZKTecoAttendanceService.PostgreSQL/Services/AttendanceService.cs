@@ -512,9 +512,9 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
         private readonly PostgreSqlDatabase _database = new();
         private const string SelectClause = @"SELECT
                                                emp_code AS EmployeeCode,
-                                               upload_time AT TIME ZONE 'Asia/Karachi' AS DateTimeStamp,
-                                               CAST(upload_time AT TIME ZONE 'Asia/Karachi' AS DATE) AS DateStamp,
-                                               CAST(upload_time AT TIME ZONE 'Asia/Karachi' AS TIME) AS TimeStamp,
+                                               punch_time AT TIME ZONE 'Asia/Karachi' AS DateTimeStamp,
+                                               CAST(punch_time AT TIME ZONE 'Asia/Karachi' AS DATE) AS DateStamp,
+                                               CAST(punch_time AT TIME ZONE 'Asia/Karachi' AS TIME) AS TimeStamp,
                                                CAST(punch_state AS INTEGER) AS StatusId,
                                                punch_state AS StatusName,
                                                verify_type AS VerifyModeId,
@@ -522,7 +522,7 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
                                                area_alias AS DeviceOffice,
                                                area_alias AS DeviceOfficeName
                                             FROM iclock_transaction ";
-        private async Task<List<AttendanceRecordDto>> ExecuteQueryAsync(string where = "", string order = " ORDER BY upload_time DESC;", params NpgsqlParameter[] parameters)
+        private async Task<List<AttendanceRecordDto>> ExecuteQueryAsync(string where = "", string order = " ORDER BY punch_time DESC;", params NpgsqlParameter[] parameters)
         {
             var list = new List<AttendanceRecordDto>();
 
@@ -555,12 +555,12 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
         };
         public Task<List<AttendanceRecordDto>> GetAllPunchesAsync() => ExecuteQueryAsync();
         public Task<List<AttendanceRecordDto>> GetCurrentMonthPunchesAsync() =>
-                                ExecuteQueryAsync(@"WHERE upload_time >=
+                                ExecuteQueryAsync(@"WHERE punch_time >=
                                 (
                                     date_trunc('month', CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Karachi')
                                     AT TIME ZONE 'Asia/Karachi'
                                 )
-                                AND upload_time <
+                                AND punch_time <
                                 (
                                     (
                                         date_trunc('month', CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Karachi')
@@ -569,12 +569,12 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
                                     AT TIME ZONE 'Asia/Karachi'
                                 )");
         public Task<List<AttendanceRecordDto>> GetCurrentYearPunchesAsync() =>
-                                ExecuteQueryAsync(@"WHERE upload_time >=
+                                ExecuteQueryAsync(@"WHERE punch_time >=
                                 (
                                     date_trunc('year', CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Karachi')
                                     AT TIME ZONE 'Asia/Karachi'
                                 )
-                                AND upload_time <
+                                AND punch_time <
                                 (
                                     (
                                         date_trunc('year', CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Karachi')
@@ -583,12 +583,12 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
                                     AT TIME ZONE 'Asia/Karachi'
                                 )");
         public Task<List<AttendanceRecordDto>> GetCurrentAndPreviousYearPunchesAsync() =>
-                                ExecuteQueryAsync(@"WHERE upload_time >=
+                                ExecuteQueryAsync(@"WHERE punch_time >=
                                 (
                                     (date_trunc('year', CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Karachi') - interval '1 year')
                                     AT TIME ZONE 'Asia/Karachi'
                                 )
-                                AND upload_time <
+                                AND punch_time <
                                 (
                                     (
                                         date_trunc('year', CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Karachi')
@@ -607,30 +607,30 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
                 TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time"));
 
             return ExecuteQueryAsync(
-                @"WHERE upload_time >= @startDate
-                        AND upload_time < @endDate",
-                " ORDER BY upload_time DESC;",
+                @"WHERE punch_time >= @startDate
+                        AND punch_time < @endDate",
+                " ORDER BY punch_time DESC;",
                 new NpgsqlParameter("startDate", startUtc),
                 new NpgsqlParameter("endDate", endUtc));
         }
         public Task<List<AttendanceRecordDto>> GetAllPunchesByEmployeeAsync(string employeeCode) =>
-            ExecuteQueryAsync("WHERE emp_code=@emp", " ORDER BY upload_time DESC;",
+            ExecuteQueryAsync("WHERE emp_code=@emp", " ORDER BY punch_time DESC;",
                 new NpgsqlParameter("emp", employeeCode));
         public Task<List<AttendanceRecordDto>> GetCurrentMonthPunchesByEmployeeAsync(string employeeCode) =>
                                     ExecuteQueryAsync(@"WHERE emp_code = @emp
-                                    AND upload_time >=
+                                    AND punch_time >=
                                     (
                                         date_trunc('month', CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Karachi')
                                         AT TIME ZONE 'Asia/Karachi'
                                     )
-                                    AND upload_time <
+                                    AND punch_time <
                                     (
                                         (
                                             date_trunc('month', CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Karachi')
                                             + interval '1 month'
                                         )
                                         AT TIME ZONE 'Asia/Karachi'
-                                    )", " ORDER BY upload_time DESC;",
+                                    )", " ORDER BY punch_time DESC;",
              new NpgsqlParameter("emp", employeeCode));
         public Task<List<AttendanceRecordDto>> GetEmployeePunchesByDateRangeAsync(string employeeCode, DateOnly start, DateOnly end)
         {
@@ -643,9 +643,9 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
                 PakistanTimeZone);
 
             return ExecuteQueryAsync(@"WHERE emp_code = @emp
-                                      AND upload_time >= @startDate
-                                      AND upload_time < @endDate",
-                                            " ORDER BY upload_time DESC;",
+                                      AND punch_time >= @startDate
+                                      AND punch_time < @endDate",
+                                            " ORDER BY punch_time DESC;",
                 new NpgsqlParameter("emp", employeeCode),
                 new NpgsqlParameter("startDate", startUtc),
                 new NpgsqlParameter("endDate", endUtc));

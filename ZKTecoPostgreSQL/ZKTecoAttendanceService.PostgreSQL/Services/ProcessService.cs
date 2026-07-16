@@ -45,6 +45,24 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
 
             Console.WriteLine($"CURRENT MONTH RECORDS COUNT: {Records.Count}");
 
+
+            var duplicateRecords = Records.GroupBy(x => new
+            {
+                x.EmployeeCode,
+                x.DateTimeStamp,
+                x.StatusId,
+                x.VerifyModeId
+            }).Where(g => g.Count() > 1).ToList();
+
+            Console.WriteLine($"Duplicate records from PostgreSQL: {duplicateRecords.Count}");
+
+            foreach (var d in duplicateRecords)
+            {
+                Console.WriteLine($"{d.Key.EmployeeCode} | {d.Key.DateTimeStamp:yyyy-MM-dd HH:mm:ss.fffffff} | {d.Key.StatusId} | {d.Key.VerifyModeId} | Count={d.Count()}");
+            }
+
+
+
             List<EmployeeAttendanceDto> attendanceLogs = Records.Select(r => new EmployeeAttendanceDto
             {
                 EmployeeCode = r.EmployeeCode,
@@ -61,6 +79,26 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
             }).ToList();
 
             Console.WriteLine($"CURRENT MONTH ATTENDANCE LOGS COUNT: {attendanceLogs.Count}");
+
+
+            var duplicateAttendance = attendanceLogs
+                .GroupBy(x => new
+                {
+                    x.EmployeeCode,
+                    x.DateTimeStamp,
+                    x.StatusId,
+                    x.VerifyModeId
+                })
+                .Where(g => g.Count() > 1)
+                .ToList();
+
+            Console.WriteLine($"Duplicate attendanceLogs: {duplicateAttendance.Count}");
+
+
+
+
+
+
 
             dbContext.SaveAttendanceRecord(attendanceLogs, AttendanceDeviceOffice.All);
 

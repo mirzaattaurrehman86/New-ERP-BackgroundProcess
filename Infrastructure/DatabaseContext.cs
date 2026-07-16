@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Net.NetworkInformation;
 using ZKTecoAttendanceService.Dto;
 
 namespace ZKTecoAttendanceService.Infrastructure
@@ -52,6 +53,21 @@ namespace ZKTecoAttendanceService.Infrastructure
                         );
                     }
 
+                    Console.WriteLine($"DataTable Rows: {table.Rows.Count}");
+
+                    var dtDuplicates = table.AsEnumerable()
+                        .GroupBy(r => new
+                        {
+                            EmployeeCode = r.Field<string>("EmployeeCode"),
+                            DateTimeStamp = r.Field<DateTime>("DateTimeStamp"),
+                            StatusId = r.Field<int>("StatusId"),
+                            VerifyModeId = r.Field<int>("VerifyModeId")
+                        })
+                        .Where(g => g.Count() > 1)
+                        .ToList();
+
+                    Console.WriteLine($"DataTable duplicates: {dtDuplicates.Count}");
+
                     var param = cmd.Parameters.AddWithValue("@AttendanceLogs", table);
                     param.SqlDbType = SqlDbType.Structured;
 
@@ -63,7 +79,41 @@ namespace ZKTecoAttendanceService.Infrastructure
                     cmd.Parameters.AddWithValue("@DeviceOfficeName", deviceOffice.ToString());
 
                     conn.Open();
-                    cmd.ExecuteNonQuery();
+
+                    //cmd.ExecuteNonQuery();
+
+
+                    using var reader = cmd.ExecuteReader();
+
+                    // Result Set #1
+                    reader.Read();
+                    Console.WriteLine($"Rows received by SQL Server : {reader.GetInt32(0)}");
+
+                    // Result Set #2
+                    reader.NextResult();
+                    reader.Read();
+                    Console.WriteLine($"Distinct rows in TVP        : {reader.GetInt32(0)}");
+
+                    // Result Set #3
+                    reader.NextResult();
+
+                    int existingRows = 0;
+                    while (reader.Read())
+                    {
+                        existingRows++;
+                    }
+
+                    Console.WriteLine($"Rows already existing       : {existingRows}");
+
+                    // Result Set #4
+                    reader.NextResult();
+                    reader.Read();
+                    Console.WriteLine($"Inserted rows              : {reader.GetInt32(0)}");
+
+                    // Result Set #5
+                    reader.NextResult();
+                    reader.Read();
+                    Console.WriteLine($"Total rows in table        : {reader.GetInt32(0)}");
                 }
             }
             catch (Exception ex)
