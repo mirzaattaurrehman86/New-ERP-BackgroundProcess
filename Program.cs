@@ -1,6 +1,5 @@
-﻿using ZKTecoAttendanceService.Dto;
-using ZKTecoAttendanceService.Services.ProcessFlow;
-
+﻿using ZKTecoAttendanceService.DAL.Services.ProcessFlow;
+using ZKTecoAttendanceService.DTO.Dto;
 
 class ConsoleProgram
 {

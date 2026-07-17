@@ -1,25 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
 	
+		
 	    <PlatformTarget>x86</PlatformTarget>
     <Platforms>AnyCPU;x86</Platforms>
 	
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.10" />
+    <PackageReference Include="Npgsql" Version="10.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\ApplicationDTO\ZKTecoAttendanceService.DTO\ZKTecoAttendanceService.DTO.csproj" />
-    <ProjectReference Include="..\..\ZKTecoPostgre\ZKTecoAttendanceService.Postgre\ZKTecoAttendanceService.Postgre.csproj" />
+    <ProjectReference Include="..\..\ZKTecoAttendanceService.csproj" />
   </ItemGroup>
-
-
 
 </Project>

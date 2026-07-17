@@ -2,7 +2,7 @@
 using System.Data;
 using ZKTecoAttendanceService.DTO.Dto;
 
-namespace ZKTecoAttendanceService.Infrastructure
+namespace ZKTecoAttendanceService.SQL.Infrastructure
 {
     public class DatabaseContext
     {

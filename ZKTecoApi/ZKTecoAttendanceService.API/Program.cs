@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Diagnostics;
 using ZKTecoAttendanceService.API.Middlewares;
-using ZKTecoAttendanceService.Dto;
+using ZKTecoAttendanceService.DTO.Dto;
 
 var builder = WebApplication.CreateBuilder(args);
 

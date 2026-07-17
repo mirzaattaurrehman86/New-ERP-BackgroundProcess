@@ -1,4 +1,4 @@
-﻿namespace ZKTecoAttendanceService.Dto
+﻿namespace ZKTecoAttendanceService.DTO.Dto
 {
     public class AttendanceServiceRequestDto 
     {

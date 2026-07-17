@@ -18,6 +18,19 @@
 	<Compile Remove="ZKTecoPostgreSQL\**" />
     <EmbeddedResource Remove="ZKTecoPostgreSQL\**" />
     <None Remove="ZKTecoPostgreSQL\**" />
+	
+    <Compile Remove="ApplicationDAL\**" />
+    <EmbeddedResource Remove="ApplicationDAL\**" />
+    <None Remove="ApplicationDAL\**" />
+	
+		<Compile Remove="ZKTecoPostgre\**" />
+    <EmbeddedResource Remove="ZKTecoPostgre\**" />
+    <None Remove="ZKTecoPostgre\**" />
+	
+	<Compile Remove="ApplicationDAL\**" />
+    <EmbeddedResource Remove="ApplicationDAL\**" />
+    <None Remove="ApplicationDAL\**" />
+	
   </ItemGroup>
 
   <ItemGroup>
@@ -42,6 +55,14 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.10" />
     <PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
   </ItemGroup>
+
+
+<ItemGroup>
+  <None Update="appsettings.json">
+    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+  </None>
+</ItemGroup>
+
 
 
 </Project>

@@ -1,5 +1,6 @@
-﻿using ZKTecoAttendanceService.Dto;
-using ZKTecoAttendanceService.Infrastructure;
+﻿
+using ZKTecoAttendanceService.DTO.Dto;
+using ZKTecoAttendanceService.SQL.Infrastructure;
 
 namespace ZKTecoAttendanceService.PostgreSQL.Services
 {
