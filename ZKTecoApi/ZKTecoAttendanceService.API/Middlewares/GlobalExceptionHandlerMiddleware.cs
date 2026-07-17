@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Text.Json;
-using ZKTecoAttendanceService.Dto;
+using ZKTecoAttendanceService.DTO.Dto;
 
 namespace ZKTecoAttendanceService.API.Middlewares
 {

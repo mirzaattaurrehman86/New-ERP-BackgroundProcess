@@ -1,4 +1,4 @@
-﻿namespace ZKTecoAttendanceService.helper
+﻿namespace ZKTecoAttendanceService.DTO.helper
 {
     public static class HelperClass
     {

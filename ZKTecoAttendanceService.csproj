@@ -10,14 +10,48 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Configurations\**" />
+    <Compile Remove="Dto\**" />
+    <Compile Remove="Enums\**" />
+    <Compile Remove="helper\**" />
+    <Compile Remove="Infrastructure\**" />
+    <Compile Remove="Services\**" />
     <Compile Remove="ZKTecoApi\**" />
+    <Compile Remove="ZKTecoSQL\**" />
+    <EmbeddedResource Remove="Configurations\**" />
+    <EmbeddedResource Remove="Dto\**" />
+    <EmbeddedResource Remove="Enums\**" />
+    <EmbeddedResource Remove="helper\**" />
+    <EmbeddedResource Remove="Infrastructure\**" />
+    <EmbeddedResource Remove="Services\**" />
     <EmbeddedResource Remove="ZKTecoApi\**" />
+    <EmbeddedResource Remove="ZKTecoSQL\**" />
+    <None Remove="Configurations\**" />
+    <None Remove="Dto\**" />
+    <None Remove="Enums\**" />
+    <None Remove="helper\**" />
+    <None Remove="Infrastructure\**" />
+    <None Remove="Services\**" />
     <None Remove="ZKTecoApi\**" />
 	
 	
 	<Compile Remove="ZKTecoPostgreSQL\**" />
     <EmbeddedResource Remove="ZKTecoPostgreSQL\**" />
     <None Remove="ZKTecoPostgreSQL\**" />
+	
+    <Compile Remove="ApplicationDAL\**" />
+    <EmbeddedResource Remove="ApplicationDAL\**" />
+    <None Remove="ApplicationDAL\**" />
+	
+		<Compile Remove="ZKTecoPostgre\**" />
+    <EmbeddedResource Remove="ZKTecoPostgre\**" />
+    <None Remove="ZKTecoPostgre\**" />
+	
+	<Compile Remove="ApplicationDTO\**" />
+    <EmbeddedResource Remove="ApplicationDTO\**" />
+    <None Remove="ApplicationDTO\**" />
+    <None Remove="ZKTecoSQL\**" />
+	
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +75,11 @@
 
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.10" />
     <PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="ApplicationDAL\ZKTecoAttendanceService.DAL\ZKTecoAttendanceService.DAL.csproj" />
+    <ProjectReference Include="ApplicationDTO\ZKTecoAttendanceService.DTO\ZKTecoAttendanceService.DTO.csproj" />
   </ItemGroup>
 
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ZKTecoAttendanceService.Dto;
+using ZKTecoAttendanceService.DTO.Dto;
 using ZKTecoAttendanceService.PostgreSQL.Services;
 
 namespace ZKTecoAttendanceService.API.Controllers

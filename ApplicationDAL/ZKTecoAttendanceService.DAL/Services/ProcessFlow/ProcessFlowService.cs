@@ -2,12 +2,12 @@
 using System.Diagnostics;
 using System.Text.Json;
 using zkemkeeper;
+using ZKTecoAttendanceService.DAL.Services.ProcessLock;
 using ZKTecoAttendanceService.DTO.Dto;
 using ZKTecoAttendanceService.DTO.helper;
-using ZKTecoAttendanceService.Services.ProcessLock;
 using ZKTecoAttendanceService.SQL.Infrastructure;
 
-namespace ZKTecoAttendanceService.Services.ProcessFlow
+namespace ZKTecoAttendanceService.DAL.Services.ProcessFlow
 {
     public class ProcessFlowService
     {

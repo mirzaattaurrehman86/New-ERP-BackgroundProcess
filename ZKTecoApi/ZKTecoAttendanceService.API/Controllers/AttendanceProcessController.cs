@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using ZKTecoAttendanceService.Dto;
-using ZKTecoAttendanceService.Services.ProcessFlow;
-using ZKTecoAttendanceService.Services.ProcessLock;
+using ZKTecoAttendanceService.DAL.Services.ProcessFlow;
+using ZKTecoAttendanceService.DAL.Services.ProcessLock;
+using ZKTecoAttendanceService.DTO.Dto;
 
 namespace ZKTecoAttendanceService.API.Controllers
 {
@@ -12,6 +12,7 @@ namespace ZKTecoAttendanceService.API.Controllers
     {
         private static CancellationTokenSource? _cts;
         private static AttendanceProcessLock? processLock;
+
         [HttpPost("run")]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(typeof(ApiResponse<AttendanceServiceRequestDto>), StatusCodes.Status201Created)]
@@ -28,10 +29,6 @@ namespace ZKTecoAttendanceService.API.Controllers
 
             if (dto.isProcessAttendance && dto.office == null && dto.machineIp == null)
                 throw new BadRequestException("For attendance processing, either an office or a machine IP address must be provided.");
-
-            //if (dto.isProcessAttendance)
-            //    if (!await _unitOfWork.AttendanceDevicesInfos.AnyAsync(x => x.IsActive))
-            //        throw new BadRequestException("There are no active attendance devices, please activate at least one device.");
 
             if (dto.isRestartMachine && dto.office != null && dto.machineIp != null)
                 throw new BadRequestException("When restarting machines, provide either an office or a machine IP address, but not both.");
@@ -54,17 +51,9 @@ namespace ZKTecoAttendanceService.API.Controllers
             if (dto.isRemoveEmployeeRegistration)
                 throw new BadRequestException("Currently employee registration removal operation not tested, So, it's bolocked for time-being.");
 
-
             ProcessFlowService processFlowService = new ProcessFlowService();
 
-            //var db = new DatabaseContext();
-
-            //checkAcquire = false;
-
             _cts = new CancellationTokenSource();
-
-            //if (await processFlowService.appLocked(dto, _cts.Token))
-            //    throw new BadRequestException("Attendance synchronization already running.");
 
             _ = Task.Run(async () =>
                 {
@@ -111,10 +100,6 @@ namespace ZKTecoAttendanceService.API.Controllers
                 }
             }
 
-            //if (_cts == null && killed <= 0)
-            //    throw new BadRequestException("No attendance process is running.");
-
-
             if (_cts == null)
             {
                 if (killed > 0)
@@ -128,13 +113,10 @@ namespace ZKTecoAttendanceService.API.Controllers
                 if (killed > 0)
                     return Ok(ApiResponse<string>.SuccessResponse("stopped", "Attendance service stopped."));
 
-                //return BadRequest("Cancellation has already been requested.");
                 return BadRequest("No attendance synchronization process is currently running.");
             }
 
             _cts.Cancel();
-
-            //_cts?.Cancel();
 
             return Ok(ApiResponse<string>.SuccessResponse("stopped", "Attendance service stopped."));
         }
