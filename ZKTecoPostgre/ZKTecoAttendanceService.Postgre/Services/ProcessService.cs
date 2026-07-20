@@ -1,11 +1,14 @@
 ﻿
+//using DocumentFormat.OpenXml.InkML;
 using ZKTecoAttendanceService.DTO.Dto;
 using ZKTecoAttendanceService.SQL.Infrastructure;
 
-namespace ZKTecoAttendanceService.PostgreSQL.Services
+namespace ZKTecoAttendanceService.Postgre.Services
 {
     public class ProcessService
     {
+        const int batchSize = 90000;
+
         private DatabaseContext dbContext;
         private AttendanceService repo;
         public ProcessService()
@@ -19,6 +22,8 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
 
             Console.WriteLine($"ALL PUNCHES COUNT: {Records.Count}");
 
+            var devicesinfo = await dbContext.GetAttendanceDevicesAsync();
+
             List<EmployeeAttendanceDto> attendanceLogs = Records.Select(r => new EmployeeAttendanceDto
             {
                 EmployeeCode = r.EmployeeCode,
@@ -28,15 +33,21 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
                 VerifyModeId = r.VerifyModeId,
                 VerifyModeName = r.VerifyModeName,
 
-                Office = AttendanceDeviceOffice.All,
-                MachineIP = "0.0.0.0",
-                MachinePort = "0",
+                Office = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
+                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
+                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.port.ToString() ?? "0",
+
                 WorkCodeUniqueTransactionId = 0
+
             }).ToList();
 
             Console.WriteLine($"ALL ATTENDANCE LOGS COUNT: {attendanceLogs.Count}");
 
-            dbContext.SaveAttendanceRecord(attendanceLogs, AttendanceDeviceOffice.All);
+            foreach (var batch in attendanceLogs.Chunk(batchSize))
+            {
+                dbContext.SaveAttendanceRecord(batch.ToList());
+            }
+            //dbContext.SaveAttendanceRecord(attendanceLogs);
 
             Console.WriteLine("************ ..::.. ATTENDANCE LOGS SAVED ..::.. ************");
         }
@@ -62,7 +73,7 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
                 Console.WriteLine($"{d.Key.EmployeeCode} | {d.Key.DateTimeStamp:yyyy-MM-dd HH:mm:ss.fffffff} | {d.Key.StatusId} | {d.Key.VerifyModeId} | Count={d.Count()}");
             }
 
-
+            var devicesinfo = await dbContext.GetAttendanceDevicesAsync();
 
             List<EmployeeAttendanceDto> attendanceLogs = Records.Select(r => new EmployeeAttendanceDto
             {
@@ -73,9 +84,10 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
                 VerifyModeId = r.VerifyModeId,
                 VerifyModeName = r.VerifyModeName,
 
-                Office = AttendanceDeviceOffice.All,
-                MachineIP = "0.0.0.0",
-                MachinePort = "0",
+                Office = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
+                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
+                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.port.ToString() ?? "0",
+
                 WorkCodeUniqueTransactionId = 0
             }).ToList();
 
@@ -95,7 +107,10 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
 
             Console.WriteLine($"Duplicate attendanceLogs: {duplicateAttendance.Count}");
 
-            dbContext.SaveAttendanceRecord(attendanceLogs, AttendanceDeviceOffice.All);
+            foreach (var batch in attendanceLogs.Chunk(batchSize))
+            {
+                dbContext.SaveAttendanceRecord(batch.ToList());
+            }
 
             Console.WriteLine("************ ..::.. ATTENDANCE LOGS SAVED ..::.. ************");
         }
@@ -105,6 +120,8 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
 
             Console.WriteLine($"CURRENT YEAR RECORDS COUNT: {Records.Count}");
 
+            var devicesinfo = await dbContext.GetAttendanceDevicesAsync();
+
             List<EmployeeAttendanceDto> attendanceLogs = Records.Select(r => new EmployeeAttendanceDto
             {
                 EmployeeCode = r.EmployeeCode,
@@ -114,15 +131,19 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
                 VerifyModeId = r.VerifyModeId,
                 VerifyModeName = r.VerifyModeName,
 
-                Office = AttendanceDeviceOffice.All,
-                MachineIP = "0.0.0.0",
-                MachinePort = "0",
+                Office = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
+                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
+                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.port.ToString() ?? "0",
+
                 WorkCodeUniqueTransactionId = 0
             }).ToList();
 
             Console.WriteLine($"CURRENT YEAR ATTENDANCE LOGS COUNT: {attendanceLogs.Count}");
 
-            dbContext.SaveAttendanceRecord(attendanceLogs, AttendanceDeviceOffice.All);
+            foreach (var batch in attendanceLogs.Chunk(batchSize))
+            {
+                dbContext.SaveAttendanceRecord(batch.ToList());
+            }
 
             Console.WriteLine("************ ..::.. ATTENDANCE LOGS SAVED ..::.. ************");
         }
@@ -132,6 +153,8 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
 
             Console.WriteLine($"CURRENT AND PREVIOUS YEAR RECORDS COUNT: {Records.Count}");
 
+            var devicesinfo = await dbContext.GetAttendanceDevicesAsync();
+
             List<EmployeeAttendanceDto> attendanceLogs = Records.Select(r => new EmployeeAttendanceDto
             {
                 EmployeeCode = r.EmployeeCode,
@@ -141,15 +164,19 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
                 VerifyModeId = r.VerifyModeId,
                 VerifyModeName = r.VerifyModeName,
 
-                Office = AttendanceDeviceOffice.All,
-                MachineIP = "0.0.0.0",
-                MachinePort = "0",
+                Office = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
+                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
+                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.port.ToString() ?? "0",
+
                 WorkCodeUniqueTransactionId = 0
             }).ToList();
 
             Console.WriteLine($"CURRENT AND PREVIOUS YEAR ATTENDANCE LOGS COUNT: {attendanceLogs.Count}");
 
-            dbContext.SaveAttendanceRecord(attendanceLogs, AttendanceDeviceOffice.All);
+            foreach (var batch in attendanceLogs.Chunk(batchSize))
+            {
+                dbContext.SaveAttendanceRecord(batch.ToList());
+            }
 
             Console.WriteLine("************ ..::.. ATTENDANCE LOGS SAVED ..::.. ************");
         }
@@ -159,6 +186,8 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
 
             Console.WriteLine($"PUNCHES BY DATE RANGE RECORDS COUNT: {Records.Count}");
 
+            var devicesinfo = await dbContext.GetAttendanceDevicesAsync();
+
             List<EmployeeAttendanceDto> attendanceLogs = Records.Select(r => new EmployeeAttendanceDto
             {
                 EmployeeCode = r.EmployeeCode,
@@ -168,15 +197,19 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
                 VerifyModeId = r.VerifyModeId,
                 VerifyModeName = r.VerifyModeName,
 
-                Office = AttendanceDeviceOffice.All,
-                MachineIP = "0.0.0.0",
-                MachinePort = "0",
+                Office = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
+                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
+                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.port.ToString() ?? "0",
+
                 WorkCodeUniqueTransactionId = 0
             }).ToList();
 
             Console.WriteLine($"PUNCHES BY DATE RANGE ATTENDANCE LOGS COUNT: {attendanceLogs.Count}");
 
-            dbContext.SaveAttendanceRecord(attendanceLogs, AttendanceDeviceOffice.All);
+            foreach (var batch in attendanceLogs.Chunk(batchSize))
+            {
+                dbContext.SaveAttendanceRecord(batch.ToList());
+            }
 
             Console.WriteLine("************ ..::.. ATTENDANCE LOGS SAVED ..::.. ************");
         }
@@ -186,6 +219,8 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
 
             Console.WriteLine($"ALL PUNCHES BY EMPLOYEE RECORDS COUNT: {Records.Count}");
 
+            var devicesinfo = await dbContext.GetAttendanceDevicesAsync();
+
             List<EmployeeAttendanceDto> attendanceLogs = Records.Select(r => new EmployeeAttendanceDto
             {
                 EmployeeCode = r.EmployeeCode,
@@ -195,15 +230,19 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
                 VerifyModeId = r.VerifyModeId,
                 VerifyModeName = r.VerifyModeName,
 
-                Office = AttendanceDeviceOffice.All,
-                MachineIP = "0.0.0.0",
-                MachinePort = "0",
+                Office = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
+                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
+                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.port.ToString() ?? "0",
+
                 WorkCodeUniqueTransactionId = 0
             }).ToList();
 
             Console.WriteLine($"ALL PUNCHES BY EMPLOYEE ATTENDANCE LOGS COUNT: {attendanceLogs.Count}");
 
-            dbContext.SaveAttendanceRecord(attendanceLogs, AttendanceDeviceOffice.All);
+            foreach (var batch in attendanceLogs.Chunk(batchSize))
+            {
+                dbContext.SaveAttendanceRecord(batch.ToList());
+            }
 
             Console.WriteLine("************ ..::.. ATTENDANCE LOGS SAVED ..::.. ************");
         }
@@ -213,6 +252,8 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
 
             Console.WriteLine($"GET CURRENT MONTH PUNCHES BY EMPLOYEE RECORDS COUNT: {Records.Count}");
 
+            var devicesinfo = await dbContext.GetAttendanceDevicesAsync();
+
             List<EmployeeAttendanceDto> attendanceLogs = Records.Select(r => new EmployeeAttendanceDto
             {
                 EmployeeCode = r.EmployeeCode,
@@ -222,15 +263,19 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
                 VerifyModeId = r.VerifyModeId,
                 VerifyModeName = r.VerifyModeName,
 
-                Office = AttendanceDeviceOffice.All,
-                MachineIP = "0.0.0.0",
-                MachinePort = "0",
+                Office = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
+                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
+                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.port.ToString() ?? "0",
+
                 WorkCodeUniqueTransactionId = 0
             }).ToList();
 
             Console.WriteLine($"GET CURRENT MONTH PUNCHES BY EMPLOYEE ATTENDANCE LOGS COUNT: {attendanceLogs.Count}");
 
-            dbContext.SaveAttendanceRecord(attendanceLogs, AttendanceDeviceOffice.All);
+            foreach (var batch in attendanceLogs.Chunk(batchSize))
+            {
+                dbContext.SaveAttendanceRecord(batch.ToList());
+            }
 
             Console.WriteLine("************ ..::.. ATTENDANCE LOGS SAVED ..::.. ************");
         }
@@ -240,6 +285,8 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
 
             Console.WriteLine($"GET EMPLOYEE PUNCHES BY DATE RANGE RECORDS COUNT: {Records.Count}");
 
+            var devicesinfo = await dbContext.GetAttendanceDevicesAsync();
+
             List<EmployeeAttendanceDto> attendanceLogs = Records.Select(r => new EmployeeAttendanceDto
             {
                 EmployeeCode = r.EmployeeCode,
@@ -249,15 +296,19 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
                 VerifyModeId = r.VerifyModeId,
                 VerifyModeName = r.VerifyModeName,
 
-                Office = AttendanceDeviceOffice.All,
-                MachineIP = "0.0.0.0",
-                MachinePort = "0",
+                Office = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
+                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
+                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName)?.port.ToString() ?? "0",
+
                 WorkCodeUniqueTransactionId = 0
             }).ToList();
 
             Console.WriteLine($"GET EMPLOYEE PUNCHES BY DATE RANGE ATTENDANCE LOGS COUNT: {attendanceLogs.Count}");
 
-            dbContext.SaveAttendanceRecord(attendanceLogs, AttendanceDeviceOffice.All);
+            foreach (var batch in attendanceLogs.Chunk(batchSize))
+            {
+                dbContext.SaveAttendanceRecord(batch.ToList());
+            }
 
             Console.WriteLine("************ ..::.. ATTENDANCE LOGS SAVED ..::.. ************");
         }

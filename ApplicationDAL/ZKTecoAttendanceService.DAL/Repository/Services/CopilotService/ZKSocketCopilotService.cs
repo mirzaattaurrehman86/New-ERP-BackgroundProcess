@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-namespace ZKTecoAttendanceService.Services.CopilotService
+namespace ZKTecoAttendanceService.DAL.Repository.Services.CopilotService
 {
     public class ZKSocketCopilotService
     {

@@ -1,6 +1,6 @@
 ﻿using ZKTecoAttendanceService.DTO.Dto;
 
-namespace ZKTecoAttendanceService.Services.AttendanceDeviceService
+namespace ZKTecoAttendanceService.DAL.Repository.Services.AttendanceDeviceService
 {
     public static class DeviceDataService
     {

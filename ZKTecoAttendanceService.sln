@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZKTecoAttendanceService", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZKTecoAttendanceService.API", "ZKTecoApi\ZKTecoAttendanceService.API\ZKTecoAttendanceService.API.csproj", "{0E921FD2-6A6E-4655-B0AA-8C2719CF82A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZKTecoAttendanceService.PostgreSQL", "ZKTecoPostgreSQL\ZKTecoAttendanceService.PostgreSQL\ZKTecoAttendanceService.PostgreSQL.csproj", "{E935F77F-402D-4C01-A4F5-0F7758761B72}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZKTecoAttendanceService.DAL", "ApplicationDAL\ZKTecoAttendanceService.DAL\ZKTecoAttendanceService.DAL.csproj", "{C1E958B4-27C7-4A11-A627-47A9EC54F3B4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZKTecoAttendanceService.Postgre", "ZKTecoPostgre\ZKTecoAttendanceService.Postgre\ZKTecoAttendanceService.Postgre.csproj", "{892857B7-CF80-48F5-8B52-C5116D8BF06C}"
@@ -41,14 +39,6 @@ Global
 		{0E921FD2-6A6E-4655-B0AA-8C2719CF82A0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0E921FD2-6A6E-4655-B0AA-8C2719CF82A0}.Release|x86.ActiveCfg = Release|Any CPU
 		{0E921FD2-6A6E-4655-B0AA-8C2719CF82A0}.Release|x86.Build.0 = Release|Any CPU
-		{E935F77F-402D-4C01-A4F5-0F7758761B72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E935F77F-402D-4C01-A4F5-0F7758761B72}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E935F77F-402D-4C01-A4F5-0F7758761B72}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E935F77F-402D-4C01-A4F5-0F7758761B72}.Debug|x86.Build.0 = Debug|Any CPU
-		{E935F77F-402D-4C01-A4F5-0F7758761B72}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E935F77F-402D-4C01-A4F5-0F7758761B72}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E935F77F-402D-4C01-A4F5-0F7758761B72}.Release|x86.ActiveCfg = Release|Any CPU
-		{E935F77F-402D-4C01-A4F5-0F7758761B72}.Release|x86.Build.0 = Release|Any CPU
 		{C1E958B4-27C7-4A11-A627-47A9EC54F3B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C1E958B4-27C7-4A11-A627-47A9EC54F3B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1E958B4-27C7-4A11-A627-47A9EC54F3B4}.Debug|x86.ActiveCfg = Debug|Any CPU

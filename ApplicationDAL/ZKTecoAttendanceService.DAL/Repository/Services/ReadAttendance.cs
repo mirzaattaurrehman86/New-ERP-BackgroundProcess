@@ -93,65 +93,68 @@
 using System.Text.Json;
 using ZKTecoAttendanceService.DTO.Dto;
 
-public class ReadAttendance
+namespace ZKTecoAttendanceService.DAL.Repository.Services
 {
-    public (List<Attendance>? data, bool success, string message) AKDeviceResponse(string ip = "192.168.36.203", int port = 4370)
+    public class ReadAttendance
     {
-        try
+        public (List<Attendance>? data, bool success, string message) AKDeviceResponse(string ip = "192.168.36.203", int port = 4370)
         {
-            var zk = new ZKSocketService(ip, port);
-            var conn = zk.Connect();
-
-            if (!conn.connected)
-                return (null, false, conn.message);
-
-            var rawData = zk.GetAttendance();
-
-            DateTime startDate = DateTime.Now.AddDays(-7).Date;
-            DateTime endDate = DateTime.Now.Date;
-
-            List<Attendance> attendanceList = new List<Attendance>();
-
-            Console.WriteLine("rawData is => " + JsonSerializer.Serialize(rawData));
-
-            foreach (var x in rawData)
+            try
             {
-                if (x[3] == null)
-                    continue;
+                var zk = new ZKSocketService(ip, port);
+                var conn = zk.Connect();
 
-                if (!DateTime.TryParse(x[3].ToString(), out DateTime dt))
-                    continue;
+                if (!conn.connected)
+                    return (null, false, conn.message);
 
-                if (dt < startDate || dt > endDate)
-                    continue;
+                var rawData = zk.GetAttendance();
 
-                string empId = x[1]?.ToString();
+                DateTime startDate = DateTime.Now.AddDays(-7).Date;
+                DateTime endDate = DateTime.Now.Date;
 
-                if (!IsValidEmployeeId(empId))
-                    continue;
+                List<Attendance> attendanceList = new List<Attendance>();
 
-                attendanceList.Add(new Attendance
+                Console.WriteLine("rawData is => " + JsonSerializer.Serialize(rawData));
+
+                foreach (var x in rawData)
                 {
-                    EmpId = empId,
-                    Type = Convert.ToInt32(x[2]),
-                    Date = dt.ToString("yyyy-MM-dd"),
-                    Time = dt.ToString("HH:mm:ss"),
-                    DateTime = dt.ToString("yyyy-MM-dd HH:mm:ss")
-                });
+                    if (x[3] == null)
+                        continue;
+
+                    if (!DateTime.TryParse(x[3].ToString(), out DateTime dt))
+                        continue;
+
+                    if (dt < startDate || dt > endDate)
+                        continue;
+
+                    string empId = x[1]?.ToString();
+
+                    if (!IsValidEmployeeId(empId))
+                        continue;
+
+                    attendanceList.Add(new Attendance
+                    {
+                        EmpId = empId,
+                        Type = Convert.ToInt32(x[2]),
+                        Date = dt.ToString("yyyy-MM-dd"),
+                        Time = dt.ToString("HH:mm:ss"),
+                        DateTime = dt.ToString("yyyy-MM-dd HH:mm:ss")
+                    });
+                }
+
+                return (attendanceList, true, "Success");
             }
-
-            return (attendanceList, true, "Success");
+            catch (Exception ex)
+            {
+                return (null, false, ex.Message);
+            }
         }
-        catch (Exception ex)
+
+        bool IsValidEmployeeId(string empId)
         {
-            return (null, false, ex.Message);
+            return !string.IsNullOrEmpty(empId)
+                   && int.TryParse(empId, out _)
+                   && empId.Length == 4;
         }
-    }
-
-    bool IsValidEmployeeId(string empId)
-    {
-        return !string.IsNullOrEmpty(empId)
-               && int.TryParse(empId, out _)
-               && empId.Length == 4;
     }
 }

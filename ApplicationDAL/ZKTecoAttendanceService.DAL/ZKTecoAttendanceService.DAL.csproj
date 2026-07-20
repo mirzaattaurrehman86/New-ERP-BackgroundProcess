@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\ApplicationDTO\ZKTecoAttendanceService.DTO\ZKTecoAttendanceService.DTO.csproj" />
+    <ProjectReference Include="..\..\ZKTecoPostgre\ZKTecoAttendanceService.Postgre\ZKTecoAttendanceService.Postgre.csproj" />
     <ProjectReference Include="..\..\ZKTecoSQL\ZKTecoAttendanceService.SQL\ZKTecoAttendanceService.SQL.csproj" />
   </ItemGroup>
 

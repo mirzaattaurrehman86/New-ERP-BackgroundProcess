@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using ZKTecoAttendanceService.SQL.Infrastructure;
 
-namespace ZKTecoAttendanceService.DAL.Services.ProcessLock
+namespace ZKTecoAttendanceService.DAL.Repository.Services.ProcessLock
 {
     public class AttendanceProcessLock
     {

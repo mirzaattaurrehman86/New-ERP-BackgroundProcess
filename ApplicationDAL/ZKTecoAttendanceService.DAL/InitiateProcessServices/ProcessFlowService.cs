@@ -2,12 +2,13 @@
 using System.Diagnostics;
 using System.Text.Json;
 using zkemkeeper;
+using ZKTecoAttendanceService.DAL.Repository.Services.ProcessLock;
 using ZKTecoAttendanceService.DTO.Dto;
 using ZKTecoAttendanceService.DTO.helper;
-using ZKTecoAttendanceService.Services.ProcessLock;
+using ZKTecoAttendanceService.Postgre.Services;
 using ZKTecoAttendanceService.SQL.Infrastructure;
 
-namespace ZKTecoAttendanceService.Services.ProcessFlow
+namespace ZKTecoAttendanceService.DAL.InitiateProcessServices
 {
     public class ProcessFlowService
     {
@@ -173,6 +174,9 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
         }
         public async Task RunAttendanceProcess(CancellationToken token, AttendanceDeviceOffice? selectedOffice = null)
         {
+
+            bool processedSuccessfully = await loadPostgreAttendance();
+
             var db = new DatabaseContext();
 
             AttendanceDeviceOffice deviceOffice = new AttendanceDeviceOffice();
@@ -181,14 +185,19 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
             CZKEM zk = new CZKEM();
             try
             {
-                List<AttendanceDeviceDto> devices = (await db.GetAttendanceDevicesAsync())/*.Where(x => x.office == AttendanceDeviceOffice.HeadOffice)*/.ToList();
+                var allphysicalDevices = await db.GetAttendanceDevicesAsync();
+
+                List<AttendanceDeviceDto> devices = allphysicalDevices.Where(x => x.IsActive == true).ToList();
+
+                if (!processedSuccessfully)
+                    devices = allphysicalDevices;
+
                 token.ThrowIfCancellationRequested();
 
                 if (selectedOffice != null && selectedOffice != AttendanceDeviceOffice.All)
                 {
                     token.ThrowIfCancellationRequested();
                     devices = devices.Where(x => x.office == selectedOffice.Value).ToList();
-
 
                     await LogInfo(selectedOffice.Value, "", "", DateTime.Now, $"Running for office: {selectedOffice.Value}");
                     token.ThrowIfCancellationRequested();
@@ -233,7 +242,9 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
                             //PrintAttendance(attendance, deviceOffice);
                             //PrintAttendanceInExcel(attendance, deviceOffice);
 
-                            db.SaveAttendanceRecord(attendance, deviceOffice);
+                            //db.SaveAttendanceRecord(attendance, deviceOffice);
+                            db.SaveAttendanceRecord(attendance);
+
                             await Touch($"Attendance saved {attendance.Count}");
                             await Log(deviceOffice, ip, port.ToString(), DateTime.Now, $"Total attendance saved: {attendance.Count}");
                             token.ThrowIfCancellationRequested();
@@ -650,7 +661,10 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
                 var db = new DatabaseContext();
                 token.ThrowIfCancellationRequested();
 
-                List<AttendanceDeviceDto> devices = (await db.GetAttendanceDevicesAsync())/*.Where(x=>x.office == AttendanceDeviceOffice.ProSoft)*/.ToList();
+                var allphysicalDevices = await db.GetAttendanceDevicesAsync();
+
+                List<AttendanceDeviceDto> devices = allphysicalDevices.Where(x => x.IsActive == true).ToList();
+
                 token.ThrowIfCancellationRequested();
 
                 if (officeFilter.HasValue && officeFilter.Value != AttendanceDeviceOffice.All)
@@ -1290,6 +1304,46 @@ namespace ZKTecoAttendanceService.Services.ProcessFlow
             }
 
             return result;
+        }
+
+
+        private async Task<bool> loadPostgreAttendance()
+        {
+            bool processedSuccessfully = true;
+            const int maxRetries = 3;
+
+            for (int attempt = 1; attempt <= maxRetries; attempt++)
+            {
+                try
+                {
+                    DateOnly startDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-1));
+                    DateOnly endDate = DateOnly.FromDateTime(DateTime.Today);
+
+                    await LogInfo(AttendanceDeviceOffice.All, "", "", DateTime.Now, $"Started Postgre data reading date range {startDate} to {endDate} (Attempt {attempt}/{maxRetries})");
+
+                    ProcessService processService = new ProcessService();
+                    await processService.loadPunchesByDateRangeAsync(startDate, endDate);
+
+                    await LogInfo(AttendanceDeviceOffice.All, "", "", DateTime.Now, $"Postgre data has loaded in application database (Attempt {attempt}/{maxRetries})");
+
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    await LogInfo(AttendanceDeviceOffice.All, "", "", DateTime.Now, $"ERROR: Attempt {attempt}/{maxRetries} failed while loading Postgre attendance. Error: {ex.Message}");
+
+                    if (attempt == maxRetries)
+                    {
+                        await LogInfo(AttendanceDeviceOffice.All, "", "", DateTime.Now, $"FAILED: Postgre attendance loading failed after {maxRetries} attempts. Exception: {ex}");
+
+                        processedSuccessfully = false;
+                        //throw;
+                    }
+
+                    await Task.Delay(TimeSpan.FromSeconds(5));
+                }
+            }
+            return processedSuccessfully;
         }
     }
 }
