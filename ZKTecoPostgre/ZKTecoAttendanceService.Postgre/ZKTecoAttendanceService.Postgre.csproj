@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\ApplicationDTO\ZKTecoAttendanceService.DTO\ZKTecoAttendanceService.DTO.csproj" />
-    <ProjectReference Include="..\..\ZKTecoAttendanceService.csproj" />
+    <ProjectReference Include="..\..\ZKTecoSQL\ZKTecoAttendanceService.SQL\ZKTecoAttendanceService.SQL.csproj" />
   </ItemGroup>
 
 </Project>

@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ApplicationDAL\ZKTecoAttendanceService.DAL\ZKTecoAttendanceService.DAL.csproj" />
     <ProjectReference Include="..\..\ApplicationDTO\ZKTecoAttendanceService.DTO\ZKTecoAttendanceService.DTO.csproj" />
     <ProjectReference Include="..\..\ZKTecoPostgre\ZKTecoAttendanceService.Postgre\ZKTecoAttendanceService.Postgre.csproj" />
   </ItemGroup>

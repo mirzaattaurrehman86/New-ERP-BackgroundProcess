@@ -12,115 +12,221 @@ namespace ZKTecoAttendanceService.SQL.Infrastructure
         {
             connectionString = _database.GetConnection().ConnectionString;
         }
-        public void SaveAttendanceRecord(List<EmployeeAttendanceDto> attendanceLogs, AttendanceDeviceOffice deviceOffice)
+
+        //public void SaveAttendanceRecord(List<EmployeeAttendanceDto> attendanceLogs, AttendanceDeviceOffice deviceOffice)
+        //{
+        //    if (attendanceLogs == null || attendanceLogs.Count == 0)
+        //        return;
+
+        //    try
+        //    {
+        //        using (SqlConnection conn = new SqlConnection(connectionString))
+        //        using (SqlCommand cmd = new SqlCommand("SaveAllAttendanceMachineLogs", conn))
+        //        {
+        //            cmd.CommandType = CommandType.StoredProcedure;
+
+        //            var table = new DataTable();
+        //            table.Columns.Add("MachineIP", typeof(string));
+        //            table.Columns.Add("MachinePort", typeof(int));
+        //            table.Columns.Add("EmployeeCode", typeof(string));
+        //            table.Columns.Add("DateTimeStamp", typeof(DateTime));
+        //            table.Columns.Add("DateStamp", typeof(DateTime));
+        //            table.Columns.Add("TimeStamp", typeof(TimeSpan));
+        //            table.Columns.Add("StatusId", typeof(int));
+        //            table.Columns.Add("StatusName", typeof(string));
+        //            table.Columns.Add("VerifyModeId", typeof(int));
+        //            table.Columns.Add("VerifyModeName", typeof(string));
+
+        //            foreach (var log in attendanceLogs)
+        //            {
+        //                table.Rows.Add(
+        //                    log.MachineIP,
+        //                    log.MachinePort,
+        //                    log.EmployeeCode,
+        //                    log.DateTimeStamp,
+        //                    log.DateTimeStamp.Date,
+        //                    log.DateTimeStamp.TimeOfDay,
+        //                    log.StatusId,
+        //                    log.StatusName,
+        //                    log.VerifyModeId,
+        //                    log.VerifyModeName,
+
+        //                    log.Office
+        //                );
+        //            }
+
+        //            Console.WriteLine($"DataTable Rows: {table.Rows.Count}");
+
+        //            var dtDuplicates = table.AsEnumerable()
+        //                .GroupBy(r => new
+        //                {
+        //                    EmployeeCode = r.Field<string>("EmployeeCode"),
+        //                    DateTimeStamp = r.Field<DateTime>("DateTimeStamp"),
+        //                    StatusId = r.Field<int>("StatusId"),
+        //                    VerifyModeId = r.Field<int>("VerifyModeId")
+        //                })
+        //                .Where(g => g.Count() > 1)
+        //                .ToList();
+
+        //            Console.WriteLine($"DataTable duplicates: {dtDuplicates.Count}");
+
+        //            var param = cmd.Parameters.AddWithValue("@AttendanceLogs", table);
+        //            param.SqlDbType = SqlDbType.Structured;
+
+        //            param.SqlDbType = SqlDbType.Structured;
+        //            param.TypeName = "dbo.AttendanceTableType";
+
+        //            // Enum parameter
+        //            cmd.Parameters.AddWithValue("@DeviceOffice", (int)deviceOffice);
+        //            cmd.Parameters.AddWithValue("@DeviceOfficeName", deviceOffice.ToString());
+
+        //            conn.Open();
+
+        //            //cmd.ExecuteNonQuery();
+
+
+        //            using var reader = cmd.ExecuteReader();
+
+        //            // Result Set #1
+        //            reader.Read();
+        //            Console.WriteLine($"Rows received by SQL Server : {reader.GetInt32(0)}");
+
+        //            // Result Set #2
+        //            reader.NextResult();
+        //            reader.Read();
+        //            Console.WriteLine($"Distinct rows in TVP        : {reader.GetInt32(0)}");
+
+        //            // Result Set #3
+        //            reader.NextResult();
+
+        //            int existingRows = 0;
+        //            while (reader.Read())
+        //            {
+        //                existingRows++;
+        //            }
+
+        //            Console.WriteLine($"Rows already existing       : {existingRows}");
+
+        //            // Result Set #4
+        //            reader.NextResult();
+        //            reader.Read();
+        //            Console.WriteLine($"Inserted rows              : {reader.GetInt32(0)}");
+
+        //            // Result Set #5
+        //            reader.NextResult();
+        //            reader.Read();
+        //            Console.WriteLine($"Total rows in table        : {reader.GetInt32(0)}");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log properly instead of swallowing
+        //        throw new Exception("Error saving attendance records", ex);
+        //    }
+        //}
+
+        public void SaveAttendanceRecord(List<EmployeeAttendanceDto> attendanceLogs)
         {
             if (attendanceLogs == null || attendanceLogs.Count == 0)
                 return;
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                using (SqlCommand cmd = new SqlCommand("SaveAllAttendanceMachineLogs", conn))
+                using SqlConnection conn = new SqlConnection(connectionString);
+                using SqlCommand cmd = new SqlCommand("SaveAllAttendanceMachineLogs", conn);
+
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                var table = new DataTable();
+
+                table.Columns.Add("MachineIP", typeof(string));
+                table.Columns.Add("MachinePort", typeof(int));
+                table.Columns.Add("EmployeeCode", typeof(string));
+                table.Columns.Add("DateTimeStamp", typeof(DateTime));
+                table.Columns.Add("DateStamp", typeof(DateTime));
+                table.Columns.Add("TimeStamp", typeof(TimeSpan));
+                table.Columns.Add("StatusId", typeof(int));
+                table.Columns.Add("StatusName", typeof(string));
+                table.Columns.Add("VerifyModeId", typeof(int));
+                table.Columns.Add("VerifyModeName", typeof(string));
+                table.Columns.Add("DeviceOffice", typeof(int));
+                table.Columns.Add("DeviceOfficeName", typeof(string));
+
+                foreach (var log in attendanceLogs)
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    var table = new DataTable();
-                    table.Columns.Add("MachineIP", typeof(string));
-                    table.Columns.Add("MachinePort", typeof(int));
-                    table.Columns.Add("EmployeeCode", typeof(string));
-                    table.Columns.Add("DateTimeStamp", typeof(DateTime));
-                    table.Columns.Add("DateStamp", typeof(DateTime));
-                    table.Columns.Add("TimeStamp", typeof(TimeSpan));
-                    table.Columns.Add("StatusId", typeof(int));
-                    table.Columns.Add("StatusName", typeof(string));
-                    table.Columns.Add("VerifyModeId", typeof(int));
-                    table.Columns.Add("VerifyModeName", typeof(string));
-
-                    foreach (var log in attendanceLogs)
-                    {
-                        table.Rows.Add(
-                            log.MachineIP,
-                            log.MachinePort,
-                            log.EmployeeCode,
-                            log.DateTimeStamp,
-                            log.DateTimeStamp.Date,
-                            log.DateTimeStamp.TimeOfDay,
-                            log.StatusId,
-                            log.StatusName,
-                            log.VerifyModeId,
-                            log.VerifyModeName
-                        );
-                    }
-
-                    Console.WriteLine($"DataTable Rows: {table.Rows.Count}");
-
-                    var dtDuplicates = table.AsEnumerable()
-                        .GroupBy(r => new
-                        {
-                            EmployeeCode = r.Field<string>("EmployeeCode"),
-                            DateTimeStamp = r.Field<DateTime>("DateTimeStamp"),
-                            StatusId = r.Field<int>("StatusId"),
-                            VerifyModeId = r.Field<int>("VerifyModeId")
-                        })
-                        .Where(g => g.Count() > 1)
-                        .ToList();
-
-                    Console.WriteLine($"DataTable duplicates: {dtDuplicates.Count}");
-
-                    var param = cmd.Parameters.AddWithValue("@AttendanceLogs", table);
-                    param.SqlDbType = SqlDbType.Structured;
-
-                    param.SqlDbType = SqlDbType.Structured;
-                    param.TypeName = "dbo.AttendanceTableType";
-
-                    // Enum parameter
-                    cmd.Parameters.AddWithValue("@DeviceOffice", (int)deviceOffice);
-                    cmd.Parameters.AddWithValue("@DeviceOfficeName", deviceOffice.ToString());
-
-                    conn.Open();
-
-                    //cmd.ExecuteNonQuery();
-
-
-                    using var reader = cmd.ExecuteReader();
-
-                    // Result Set #1
-                    reader.Read();
-                    Console.WriteLine($"Rows received by SQL Server : {reader.GetInt32(0)}");
-
-                    // Result Set #2
-                    reader.NextResult();
-                    reader.Read();
-                    Console.WriteLine($"Distinct rows in TVP        : {reader.GetInt32(0)}");
-
-                    // Result Set #3
-                    reader.NextResult();
-
-                    int existingRows = 0;
-                    while (reader.Read())
-                    {
-                        existingRows++;
-                    }
-
-                    Console.WriteLine($"Rows already existing       : {existingRows}");
-
-                    // Result Set #4
-                    reader.NextResult();
-                    reader.Read();
-                    Console.WriteLine($"Inserted rows              : {reader.GetInt32(0)}");
-
-                    // Result Set #5
-                    reader.NextResult();
-                    reader.Read();
-                    Console.WriteLine($"Total rows in table        : {reader.GetInt32(0)}");
+                    table.Rows.Add(
+                        log.MachineIP,
+                        log.MachinePort,
+                        log.EmployeeCode,
+                        log.DateTimeStamp,
+                        log.DateTimeStamp.Date,
+                        log.DateTimeStamp.TimeOfDay,
+                        log.StatusId,
+                        log.StatusName,
+                        log.VerifyModeId,
+                        log.VerifyModeName,
+                        (int)log.Office,
+                        log.Office.ToString()
+                    );
                 }
+
+                //Console.WriteLine($"DataTable Rows: {table.Rows.Count}");
+
+                //var dtDuplicates = table.AsEnumerable()
+                //    .GroupBy(r => new
+                //    {
+                //        EmployeeCode = r.Field<string>("EmployeeCode"),
+                //        DateTimeStamp = r.Field<DateTime>("DateTimeStamp"),
+                //        StatusId = r.Field<int>("StatusId"),
+                //        VerifyModeId = r.Field<int>("VerifyModeId")
+                //    })
+                //    .Where(g => g.Count() > 1)
+                //    .ToList();
+
+                //Console.WriteLine($"DataTable duplicates: {dtDuplicates.Count}");
+
+                var param = cmd.Parameters.AddWithValue("@AttendanceLogs", table);
+                param.SqlDbType = SqlDbType.Structured;
+                param.TypeName = "dbo.AttendanceTableType";
+
+                conn.Open();
+
+                using var reader = cmd.ExecuteReader();
+
+                //// Result Set #1
+                //reader.Read();
+                //Console.WriteLine($"Rows received by SQL Server : {reader.GetInt32(0)}");
+
+                //// Result Set #2
+                //reader.NextResult();
+                //reader.Read();
+                //Console.WriteLine($"Distinct rows in TVP        : {reader.GetInt32(0)}");
+
+                //// Result Set #3
+                //reader.NextResult();
+
+                //int existingRows = 0;
+                //while (reader.Read())
+                //    existingRows++;
+
+                //Console.WriteLine($"Rows already existing       : {existingRows}");
+
+                //// Result Set #4
+                //reader.NextResult();
+                //reader.Read();
+                //Console.WriteLine($"Inserted rows              : {reader.GetInt32(0)}");
+
+                //// Result Set #5
+                //reader.NextResult();
+                //reader.Read();
+                //Console.WriteLine($"Total rows in table        : {reader.GetInt32(0)}");
             }
             catch (Exception ex)
             {
-                // Log properly instead of swallowing
                 throw new Exception("Error saving attendance records", ex);
             }
         }
+
         public void RunAttendanceSync()
         {
             try
@@ -193,7 +299,12 @@ namespace ZKTecoAttendanceService.SQL.Infrastructure
                             deviceNumber = Convert.ToInt32(reader["deviceNumber"]),
                             deviceOrder = reader["deviceOrder"] == DBNull.Value
                                 ? 0/*null*/
-                                : Convert.ToInt32(reader["deviceOrder"])
+                                : Convert.ToInt32(reader["deviceOrder"]),
+
+                            DeviceFirstnamePostgre = reader["DeviceFirstnamePostgre"].ToString()!,
+                            DeviceSecondnamePostgre = reader["DeviceSecondnamePostgre"].ToString()!,
+
+                            IsActive = reader["IsActive"] == DBNull.Value ? null : (bool?)Convert.ToBoolean(reader["IsActive"])
                         });
                     }
                 }

@@ -4,7 +4,7 @@ using ZKTecoAttendanceService.DTO.Dto.PostgresSQL;
 //using ZKTecoAttendanceService.PostgreSQL.DTOs;
 using ZKTecoAttendanceService.PostgreSQL.Infrastructure;
 
-namespace ZKTecoAttendanceService.PostgreSQL.Services
+namespace ZKTecoAttendanceService.Postgre.Services
 {
     //public class AttendanceService
     //{
@@ -522,7 +522,9 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
                                                verify_type AS VerifyModeId,
                                                verify_type::text AS VerifyModeName,
                                                area_alias AS DeviceOffice,
-                                               area_alias AS DeviceOfficeName
+                                               area_alias AS DeviceOfficeName,
+                                               
+                                              terminal_alias AS DeviceName
                                             FROM iclock_transaction ";
         private async Task<List<AttendanceRecordDto>> ExecuteQueryAsync(string where = "", string order = " ORDER BY punch_time DESC;", params NpgsqlParameter[] parameters)
         {
@@ -553,7 +555,8 @@ namespace ZKTecoAttendanceService.PostgreSQL.Services
             VerifyModeId = r.GetInt32(6),
             VerifyModeName = ZKTecoAttendanceService.DTO.helper.HelperClass.MapVerifyMode(r.GetInt32(6)),
             DeviceOffice = r.IsDBNull(8) ? string.Empty : r.GetString(8),
-            DeviceOfficeName = r.IsDBNull(9) ? string.Empty : r.GetString(9)
+            DeviceOfficeName = r.IsDBNull(9) ? string.Empty : r.GetString(9),
+            DeviceName = r.IsDBNull(10) ? string.Empty : r.GetString(10)
         };
         public Task<List<AttendanceRecordDto>> GetAllPunchesAsync() => ExecuteQueryAsync();
         public Task<List<AttendanceRecordDto>> GetCurrentMonthPunchesAsync() =>

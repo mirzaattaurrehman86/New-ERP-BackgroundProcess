@@ -21,5 +21,7 @@
         public string DeviceOffice { get; set; } = "";
 
         public string DeviceOfficeName { get; set; } = "";
+
+        public string DeviceName { get; set; } = "";
     }
 }

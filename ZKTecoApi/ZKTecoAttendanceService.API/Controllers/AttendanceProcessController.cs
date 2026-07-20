@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using ZKTecoAttendanceService.DAL.Services.ProcessFlow;
-using ZKTecoAttendanceService.DAL.Services.ProcessLock;
+using ZKTecoAttendanceService.DAL.InitiateProcessServices;
+using ZKTecoAttendanceService.DAL.Repository.Services.ProcessLock;
 using ZKTecoAttendanceService.DTO.Dto;
 
 namespace ZKTecoAttendanceService.API.Controllers
@@ -23,6 +23,11 @@ namespace ZKTecoAttendanceService.API.Controllers
 
             if (dto == null)
                 throw new BadRequestException("request is null.");
+
+            //**
+            if (dto.isProcessAttendance && dto.office != AttendanceDeviceOffice.All)
+                throw new BadRequestException("Currenty you can process the attendance for all only. `PostgreSQL`");
+            //**
 
             if (dto.isProcessAttendance && dto.office != null && dto.machineIp != null)
                 throw new BadRequestException("When processing attendance, you must choose a single scope: either provide an office to process attendance for all machines within that office, or provide a machine IP address to process attendance for a specific machine. Do not provide both.");

@@ -11,5 +11,11 @@
         public int deviceNumber { get; set; }
 
         public AttendanceDeviceOffice office { get; set; }
+
+        public string? DeviceFirstnamePostgre { get; set; }
+        public string? DeviceSecondnamePostgre { get; set; }
+
+
+        public bool? IsActive { get; set; }
     }
 }

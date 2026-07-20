@@ -1,4 +1,8 @@
-﻿namespace ZKTecoAttendanceService
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ZKTecoAttendanceService.DAL.Repository.Services
 {
     public static class Validator
     {
