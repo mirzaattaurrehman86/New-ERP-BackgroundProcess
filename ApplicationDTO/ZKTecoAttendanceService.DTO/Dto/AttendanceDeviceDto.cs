@@ -9,13 +9,10 @@
         public int port { get; set; }
         public string serialNumber { get; set; } = null!;
         public int deviceNumber { get; set; }
-
         public AttendanceDeviceOffice office { get; set; }
-
         public string? DeviceFirstnamePostgre { get; set; }
         public string? DeviceSecondnamePostgre { get; set; }
-
-
         public bool? IsActive { get; set; }
+        public string? DeviceChangedNamePostgre { get; set; }
     }
 }
