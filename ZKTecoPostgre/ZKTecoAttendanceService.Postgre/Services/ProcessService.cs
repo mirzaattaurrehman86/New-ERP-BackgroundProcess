@@ -33,9 +33,9 @@ namespace ZKTecoAttendanceService.Postgre.Services
                 VerifyModeId = r.VerifyModeId,
                 VerifyModeName = r.VerifyModeName,
 
-                Office = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
-                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
-                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.port.ToString() ?? "0",
+                Office = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
+                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
+                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.port.ToString() ?? "0",
 
                 WorkCodeUniqueTransactionId = 0
 
@@ -84,9 +84,9 @@ namespace ZKTecoAttendanceService.Postgre.Services
                 VerifyModeId = r.VerifyModeId,
                 VerifyModeName = r.VerifyModeName,
 
-                Office = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
-                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
-                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.port.ToString() ?? "0",
+                Office = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
+                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
+                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.port.ToString() ?? "0",
 
                 WorkCodeUniqueTransactionId = 0
             }).ToList();
@@ -131,9 +131,9 @@ namespace ZKTecoAttendanceService.Postgre.Services
                 VerifyModeId = r.VerifyModeId,
                 VerifyModeName = r.VerifyModeName,
 
-                Office = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
-                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
-                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.port.ToString() ?? "0",
+                Office = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
+                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
+                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.port.ToString() ?? "0",
 
                 WorkCodeUniqueTransactionId = 0
             }).ToList();
@@ -164,9 +164,9 @@ namespace ZKTecoAttendanceService.Postgre.Services
                 VerifyModeId = r.VerifyModeId,
                 VerifyModeName = r.VerifyModeName,
 
-                Office = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
-                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
-                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.port.ToString() ?? "0",
+                Office = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
+                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
+                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.port.ToString() ?? "0",
 
                 WorkCodeUniqueTransactionId = 0
             }).ToList();
@@ -197,9 +197,9 @@ namespace ZKTecoAttendanceService.Postgre.Services
                 VerifyModeId = r.VerifyModeId,
                 VerifyModeName = r.VerifyModeName,
 
-                Office = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
-                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
-                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.port.ToString() ?? "0",
+                Office = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
+                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
+                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.port.ToString() ?? "0",
 
                 WorkCodeUniqueTransactionId = 0
             }).ToList();
@@ -230,9 +230,9 @@ namespace ZKTecoAttendanceService.Postgre.Services
                 VerifyModeId = r.VerifyModeId,
                 VerifyModeName = r.VerifyModeName,
 
-                Office = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
-                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
-                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.port.ToString() ?? "0",
+                Office = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
+                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
+                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.port.ToString() ?? "0",
 
                 WorkCodeUniqueTransactionId = 0
             }).ToList();
@@ -263,9 +263,9 @@ namespace ZKTecoAttendanceService.Postgre.Services
                 VerifyModeId = r.VerifyModeId,
                 VerifyModeName = r.VerifyModeName,
 
-                Office = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
-                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
-                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.port.ToString() ?? "0",
+                Office = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
+                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
+                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.port.ToString() ?? "0",
 
                 WorkCodeUniqueTransactionId = 0
             }).ToList();
@@ -296,9 +296,9 @@ namespace ZKTecoAttendanceService.Postgre.Services
                 VerifyModeId = r.VerifyModeId,
                 VerifyModeName = r.VerifyModeName,
 
-                Office = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
-                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
-                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceFirstnamePostgre == r.DeviceName || d.DeviceSecondnamePostgre == r.DeviceName || d.DeviceChangedNamePostgre == r.DeviceName)?.port.ToString() ?? "0",
+                Office = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.office ?? AttendanceDeviceOffice.All,
+                MachineIP = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.ip ?? "0.0.0.0",
+                MachinePort = devicesinfo.FirstOrDefault(d => d.DeviceChangedNamePostgre == r.DeviceName)?.port.ToString() ?? "0",
 
                 WorkCodeUniqueTransactionId = 0
             }).ToList();
