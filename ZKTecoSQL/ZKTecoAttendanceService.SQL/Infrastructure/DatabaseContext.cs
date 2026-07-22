@@ -304,7 +304,9 @@ namespace ZKTecoAttendanceService.SQL.Infrastructure
                             DeviceFirstnamePostgre = reader["DeviceFirstnamePostgre"].ToString()!,
                             DeviceSecondnamePostgre = reader["DeviceSecondnamePostgre"].ToString()!,
 
-                            IsActive = reader["IsActive"] == DBNull.Value ? null : (bool?)Convert.ToBoolean(reader["IsActive"])
+                            IsActive = reader["IsActive"] == DBNull.Value ? null : (bool?)Convert.ToBoolean(reader["IsActive"]),
+                            DeviceChangedNamePostgre = reader["DeviceChangedNamePostgre"].ToString()!
+
                         });
                     }
                 }
